@@ -1,31 +1,113 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trilha Daniel Miranda</title>
-  <meta name="description" content="Plano de estudos personalizado — do plateau ao consultor sênior em dados." />
-  //fonts.googleapis.com" />
-  //fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  />
-  " />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Trilha Daniel Miranda</title>
+//fonts.googleapis.com"/>
+//fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0f172a;--bg2:#1e293b;--bg3:#334155;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--blue:#3b82f6;--green:#10b981;--yellow:#f59e0b;--red:#ef4444;--purple:#8b5cf6;--radius:12px;--shadow:0 4px 24px rgba(0,0,0,.4)}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;min-height:100vh}
+.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem}
+.login-card{background:var(--bg2);border-radius:var(--radius);padding:3rem 2rem;max-width:400px;width:100%;text-align:center;box-shadow:var(--shadow)}
+.logo{font-size:3rem;margin-bottom:1rem}
+.login-card h1{font-size:1.5rem;margin-bottom:.5rem}
+.login-card p{color:var(--text2);margin-bottom:2rem;line-height:1.6}
+.btn-google{display:flex;align-items:center;gap:.75rem;background:#fff;color:#1f2937;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;width:100%;justify-content:center;transition:opacity .2s}
+.btn-google:hover{opacity:.9}
+.header{background:var(--bg2);border-bottom:1px solid var(--bg3);position:sticky;top:0;z-index:100}
+.header-inner{max-width:900px;margin:0 auto;padding:.875rem 1rem;display:flex;align-items:center;justify-content:space-between}
+.header-left{display:flex;align-items:center;gap:.5rem}
+.logo-icon{font-size:1.4rem}
+.header-title{font-weight:700;font-size:1rem}
+.header-right{display:flex;align-items:center;gap:.75rem}
+.user-name{color:var(--text2);font-size:.875rem}
+.btn-signout{background:transparent;border:1px solid var(--bg3);color:var(--text2);border-radius:6px;padding:.25rem .75rem;cursor:pointer;font-size:.8rem}
+.health-panel{max-width:900px;margin:1.5rem auto;padding:0 1rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem}
+.health-card{background:var(--bg2);border-radius:var(--radius);padding:1.25rem;border:1px solid var(--bg3)}
+.health-card.card-warning{border-color:var(--yellow)}
+.health-label{font-size:.75rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.25rem}
+.health-value{font-size:2rem;font-weight:800;line-height:1}
+.health-of{font-size:1rem;font-weight:400;color:var(--text2)}
+.health-sub{font-size:.75rem;color:var(--text2);margin:.25rem 0 .75rem}
+.progress-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--blue);border-radius:3px;transition:width .5s ease}
+.fill-green{background:var(--green)}
+.fill-warning{background:var(--yellow)}
+.text-warning{color:var(--yellow)}
+.text-green{color:var(--green)}
+.today-check{max-width:900px;margin:0 auto 1rem;padding:0 1rem}
+.today-inner{background:linear-gradient(135deg,#1e3a5f,#1e293b);border:1px solid var(--blue);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.today-icon{font-size:1.5rem}
+.today-text{flex:1;font-size:.9rem}
+.btn-today{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:.5rem 1.25rem;cursor:pointer;font-weight:600;font-size:.875rem;transition:background .2s}
+.btn-today-done{background:var(--green)}
+.phase-filter{max-width:900px;margin:0 auto 1.5rem;padding:0 1rem;display:flex;gap:.5rem;flex-wrap:wrap}
+.pill{background:var(--bg2);color:var(--text2);border:1px solid var(--bg3);border-radius:20px;padding:.375rem 1rem;cursor:pointer;font-size:.8rem;font-weight:500;transition:all .2s}
+.pill:hover{border-color:var(--blue);color:var(--text)}
+.pill-active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.weeks-list{max-width:900px;margin:0 auto 3rem;padding:0 1rem;display:flex;flex-direction:column;gap:.75rem}
+.week-card{background:var(--bg2);border-radius:var(--radius);border:1px solid var(--bg3);overflow:hidden;transition:border-color .2s}
+.week-card:hover{border-color:var(--blue)}
+.status-current{border-left:4px solid var(--blue)}
+.status-late{border-left:4px solid var(--red)}
+.status-done{border-left:4px solid var(--green);opacity:.85}
+.status-future{opacity:.6}
+.week-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem .25rem;cursor:pointer;gap:.5rem;flex-wrap:wrap}
+.week-left{display:flex;align-items:center;gap:.5rem}
+.week-number{font-size:.75rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
+.week-phase-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.week-phase-name{font-size:.75rem;color:var(--text2)}
+.week-right{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.week-date{font-size:.75rem;color:var(--text3)}
+.week-progress-mini{font-size:.75rem;color:var(--text2);font-weight:600}
+.week-chevron{color:var(--text3);font-size:.75rem}
+.status-current-badge{background:rgba(59,130,246,.15);color:var(--blue);padding:.125rem .5rem;border-radius:10px;font-size:.7rem;font-weight:600}
+.status-late-badge{background:rgba(239,68,68,.15);color:var(--red);padding:.125rem .5rem;border-radius:10px;font-size:.7rem;font-weight:600}
+.status-done-badge{background:rgba(16,185,129,.15);color:var(--green);padding:.125rem .5rem;border-radius:10px;font-size:.7rem;font-weight:600}
+.status-future-badge{background:var(--bg3);color:var(--text3);padding:.125rem .5rem;border-radius:10px;font-size:.7rem;font-weight:600}
+.week-title{padding:.25rem 1.25rem .75rem;font-weight:600;font-size:.95rem;cursor:pointer}
+.week-progress-bar{height:3px;background:var(--bg3);margin:0 1.25rem .5rem;border-radius:2px;overflow:hidden}
+.week-progress-fill{height:100%;border-radius:2px;transition:width .4s ease}
+.week-body{padding:1rem 1.25rem 1.25rem;border-top:1px solid var(--bg3)}
+.section-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-weight:700;margin:1rem 0 .5rem}
+.section-label:first-child{margin-top:0}
+.content-list{list-style:none;display:flex;flex-direction:column;gap:.375rem}
+.content-list li{font-size:.875rem;color:var(--text2);padding-left:1rem;position:relative;line-height:1.5}
+.content-list li::before{content:'→';position:absolute;left:0;color:var(--text3)}
+.exercise-list{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.exercise-item{background:var(--bg);border-radius:8px;padding:.625rem .875rem;border:1px solid var(--bg3);transition:border-color .2s}
+.exercise-item:hover{border-color:var(--blue)}
+.exercise-item.ex-done{opacity:.6}
+.ex-label{display:flex;align-items:flex-start;gap:.75rem;cursor:pointer;font-size:.875rem;line-height:1.5}
+.ex-label input[type=checkbox]{margin-top:.15rem;width:16px;height:16px;accent-color:var(--blue);flex-shrink:0;cursor:pointer}
+.ex-done .ex-label span{text-decoration:line-through;color:var(--text3)}
+.cert-badge{background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(245,158,11,.05));border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:.625rem 1rem;font-size:.875rem;color:var(--yellow)}
+.projeto-box{background:linear-gradient(135deg,rgba(59,130,246,.08),rgba(139,92,246,.08));border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:.625rem 1rem;font-size:.875rem;color:var(--text2);line-height:1.5}
+@media(max-width:600px){.health-panel{grid-template-columns:1fr 1fr}.week-header{flex-direction:column;align-items:flex-start}.week-right{width:100%;justify-content:space-between}.header-title{font-size:.875rem}.health-value{font-size:1.5rem}}
+@media(max-width:380px){.health-panel{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-  <div id="root">
-    <div style="
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      min-height:100vh;
-      color:#94a3b8;
-      font-family:system-ui;
-      font-size:1rem;
-      background:#0f172a;
-    ">
-      Carregando...
-    </div>
-  </div>
-  <script type="module" src="app.js"></script>
-</body>
-</html>
+<div id="root"><div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#94a3b8;font-family:system-ui;background:#0f172a">Carregando...</div></div>
+<script>
+const { createClient } = supabase;
+const SUPABASE_URL = 'https://jlhhdrxmqwwtqeuxowyj.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_OBQ3GuNPNqBFbHHf7L7uVA_x-z3B-Pj';
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const TRILHA_START_DATE = '2026-06-08';
+const fases = [
+  {id:1,nome:'Estratégia Analítica',cor:'#3B82F6',semanas:[1,6]},
+  {id:2,nome:'IA + Agentes + Anthropic',cor:'#8B5CF6',semanas:[7,13]},
+  {id:3,nome:'Arquitetura de Dados',cor:'#10B981',semanas:[14,20]},
+  {id:4,nome:'Machine Learning',cor:'#F59E0B',semanas:[21,30]},
+  {id:5,nome:'Consultoria + Autoridade',cor:'#EF4444',semanas:[31,36]},
+];
+const semanas = [
+  {id:1,fase:1,titulo:'Power BI Estratégico — Fundamentos',conteudo:['Microsoft Learn — Data Analyst PL-300: módulos 1 e 2','YouTube Meigarom: "KPIs que importam de verdade"','Leitura: Storytelling with Data (blog da autora — cap. 1 e 2)'],exercicios:['Crie um relatório Power BI com os dados de vendas do seu trabalho atual','Liste 5 KPIs do seu setor e escreva 1 pergunta de negócio para cada','Refaça um dashboard antigo aplicando os princípios de storytelling'],certificacao:null,projeto:'Publique no GitHub o primeiro artigo do DataHub: "Por que KPI ruim mata decisão boa"'},
+  {id:2,fase:1,titulo:'SQL Avançado para Análise',conteudo:['YouTube Programação Dinâmica: SQL Window Functions (playlist completa)','Mode Analytics: SQL School — Advanced (gratuito)','StrataScratch: 10 exercícios nível médio'],exercicios:['Resolva 10 desafios SQL no StrataScratch (nível médio)','Escreva uma query com ROW_NUMBER, RANK e DENSE_RANK sobre dados reais','Crie uma análise de cohort simples em SQL puro','Documente as queries no GitHub com comentários explicando o raciocínio'],certificacao:null,projeto:'Adicione seção SQL ao DataHub com uma análise real comentada'},
+  {id:3,fase:1,titulo:'Estatística Aplicada a Negócios',conteudo:
