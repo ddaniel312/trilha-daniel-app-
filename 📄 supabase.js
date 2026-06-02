@@ -1,5 +1,5 @@
 // supabase.js
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const SUPABASE_URL = 'https://jlhhdrxmqwwtqeuxowyj.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_OBQ3GuNPNqBFbHHf7L7uVA_x-z3B-Pj';
@@ -24,7 +24,6 @@ export async function signOut() {
   window.location.reload();
 }
 
-// ── Exercícios ──────────────────────────────────────────
 export async function loadExercises(userId) {
   const { data, error } = await supabase
     .from('exercise_entries')
@@ -37,12 +36,13 @@ export async function loadExercises(userId) {
 export async function toggleExercise(userId, key, completed) {
   const { error } = await supabase
     .from('exercise_entries')
-    .upsert({ user_id: userId, entry_key: key, completed, updated_at: new Date().toISOString() },
-             { onConflict: 'user_id,entry_key' });
+    .upsert(
+      { user_id: userId, entry_key: key, completed, updated_at: new Date().toISOString() },
+      { onConflict: 'user_id,entry_key' }
+    );
   if (error) console.error(error);
 }
 
-// ── Rotina diária ────────────────────────────────────────
 export async function loadRoutine(userId) {
   const { data, error } = await supabase
     .from('routine_entries')
@@ -55,7 +55,9 @@ export async function loadRoutine(userId) {
 export async function toggleRoutine(userId, key, completed) {
   const { error } = await supabase
     .from('routine_entries')
-    .upsert({ user_id: userId, entry_key: key, completed, updated_at: new Date().toISOString() },
-             { onConflict: 'user_id,entry_key' });
+    .upsert(
+      { user_id: userId, entry_key: key, completed, updated_at: new Date().toISOString() },
+      { onConflict: 'user_id,entry_key' }
+    );
   if (error) console.error(error);
 }
