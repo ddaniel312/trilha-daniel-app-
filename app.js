@@ -293,30 +293,40 @@ window.filterPhase = (phaseId) => {
 
 // ── Init ─────────────────────────────────────────────────
 async function init() {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session?.user) {
-    currentUser = session.user;
-    [exercises, routine] = await Promise.all([
-      loadExercises(currentUser.id),
-      loadRoutine(currentUser.id),
-    ]);
-  }
-  render();
-
-  supabase.auth.onAuthStateChange(async (event, session) => {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
     if (session?.user) {
       currentUser = session.user;
       [exercises, routine] = await Promise.all([
         loadExercises(currentUser.id),
         loadRoutine(currentUser.id),
       ]);
-    } else {
-      currentUser = null;
-      exercises = {};
-      routine = {};
     }
     render();
-  });
+
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        currentUser = session.user;
+        [exercises, routine] = await Promise.all([
+          loadExercises(currentUser.id),
+          loadRoutine(currentUser.id),
+        ]);
+      } else {
+        currentUser = null;
+        exercises = {};
+        routine = {};
+      }
+      render();
+    });
+  } catch (err) {
+    document.getElementById('root').innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0f172a;color:#ef4444;font-family:system-ui;padding:2rem;text-align:center;flex-direction:column;gap:1rem;">
+        <div style="font-size:2rem;">⚠️</div>
+        <div style="font-weight:700;font-size:1.1rem;">Erro ao carregar o app</div>
+        <div style="color:#94a3b8;font-size:.875rem;max-width:400px;word-break:break-all;">${err.message}</div>
+        <div style="color:#64748b;font-size:.75rem;">${err.stack || ''}</div>
+      </div>`;
+  }
 }
 
 init();
