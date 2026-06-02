@@ -229,7 +229,7 @@ export const semanas = [
   },
 
   // ── FASE 3 ─────────────────────────────────────────────
-  {
+    {
     id: 14, fase: 3,
     titulo: 'Fundamentos de Arquitetura de Dados',
     conteudo: [
@@ -243,7 +243,8 @@ export const semanas = [
       'Mapeie a arquitetura de dados do seu trabalho atual (mesmo que simples)',
     ],
     certificacao: 'LABDATA/FIA: Arquitetura de Solução em Dados (certificado gratuito)',
-    projeto: 'Artigo DataHub: "Arquitetura de dados para PMEs — o que você precisa saber
+    projeto: 'Artigo DataHub: "Arquitetura de dados para PMEs — o que você precisa saber"',
+  },
         {
     id: 15, fase: 3,
     titulo: 'Modelagem Dimensional — Kimball vs Inmon',
