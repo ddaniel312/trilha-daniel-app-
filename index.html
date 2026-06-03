@@ -1,113 +1,498 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Trilha Daniel Miranda</title>
-//fonts.googleapis.com"/>
-//fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0f172a;--bg2:#1e293b;--bg3:#334155;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;--blue:#3b82f6;--green:#10b981;--yellow:#f59e0b;--red:#ef4444;--purple:#8b5cf6;--radius:12px;--shadow:0 4px 24px rgba(0,0,0,.4)}
-body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;min-height:100vh}
-.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem}
-.login-card{background:var(--bg2);border-radius:var(--radius);padding:3rem 2rem;max-width:400px;width:100%;text-align:center;box-shadow:var(--shadow)}
-.logo{font-size:3rem;margin-bottom:1rem}
-.login-card h1{font-size:1.5rem;margin-bottom:.5rem}
-.login-card p{color:var(--text2);margin-bottom:2rem;line-height:1.6}
-.btn-google{display:flex;align-items:center;gap:.75rem;background:#fff;color:#1f2937;border:none;border-radius:8px;padding:.75rem 1.5rem;font-size:1rem;font-weight:600;cursor:pointer;width:100%;justify-content:center;transition:opacity .2s}
-.btn-google:hover{opacity:.9}
-.header{background:var(--bg2);border-bottom:1px solid var(--bg3);position:sticky;top:0;z-index:100}
-.header-inner{max-width:900px;margin:0 auto;padding:.875rem 1rem;display:flex;align-items:center;justify-content:space-between}
-.header-left{display:flex;align-items:center;gap:.5rem}
-.logo-icon{font-size:1.4rem}
-.header-title{font-weight:700;font-size:1rem}
-.header-right{display:flex;align-items:center;gap:.75rem}
-.user-name{color:var(--text2);font-size:.875rem}
-.btn-signout{background:transparent;border:1px solid var(--bg3);color:var(--text2);border-radius:6px;padding:.25rem .75rem;cursor:pointer;font-size:.8rem}
-.health-panel{max-width:900px;margin:1.5rem auto;padding:0 1rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem}
-.health-card{background:var(--bg2);border-radius:var(--radius);padding:1.25rem;border:1px solid var(--bg3)}
-.health-card.card-warning{border-color:var(--yellow)}
-.health-label{font-size:.75rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.25rem}
-.health-value{font-size:2rem;font-weight:800;line-height:1}
-.health-of{font-size:1rem;font-weight:400;color:var(--text2)}
-.health-sub{font-size:.75rem;color:var(--text2);margin:.25rem 0 .75rem}
-.progress-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
-.progress-fill{height:100%;background:var(--blue);border-radius:3px;transition:width .5s ease}
-.fill-green{background:var(--green)}
-.fill-warning{background:var(--yellow)}
-.text-warning{color:var(--yellow)}
-.text-green{color:var(--green)}
-.today-check{max-width:900px;margin:0 auto 1rem;padding:0 1rem}
-.today-inner{background:linear-gradient(135deg,#1e3a5f,#1e293b);border:1px solid var(--blue);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
-.today-icon{font-size:1.5rem}
-.today-text{flex:1;font-size:.9rem}
-.btn-today{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:.5rem 1.25rem;cursor:pointer;font-weight:600;font-size:.875rem;transition:background .2s}
-.btn-today-done{background:var(--green)}
-.phase-filter{max-width:900px;margin:0 auto 1.5rem;padding:0 1rem;display:flex;gap:.5rem;flex-wrap:wrap}
-.pill{background:var(--bg2);color:var(--text2);border:1px solid var(--bg3);border-radius:20px;padding:.375rem 1rem;cursor:pointer;font-size:.8rem;font-weight:500;transition:all .2s}
-.pill:hover{border-color:var(--blue);color:var(--text)}
-.pill-active{background:var(--blue);color:#fff;border-color:var(--blue)}
-.weeks-list{max-width:900px;margin:0 auto 3rem;padding:0 1rem;display:flex;flex-direction:column;gap:.75rem}
-.week-card{background:var(--bg2);border-radius:var(--radius);border:1px solid var(--bg3);overflow:hidden;transition:border-color .2s}
-.week-card:hover{border-color:var(--blue)}
-.status-current{border-left:4px solid var(--blue)}
-.status-late{border-left:4px solid var(--red)}
-.status-done{border-left:4px solid var(--green);opacity:.85}
-.status-future{opacity:.6}
-.week-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem .25rem;cursor:pointer;gap:.5rem;flex-wrap:wrap}
-.week-left{display:flex;align-items:center;gap:.5rem}
-.week-number{font-size:.75rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
-.week-phase-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.week-phase-name{font-size:.75rem;color:var(--text2)}
-.week-right{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
-.week-date{font-size:.75rem;color:var(--text3)}
-.week-progress-mini{font-size:.75rem;color:var(--text2);font-weight:600}
-.week-chevron{color:var(--text3);font-size:.75rem}
-.status-current-badge{background:rgba(59,130,246,.15);color:var(--blue);padding:.125rem .5rem;border-radius:10px;font-size:.7rem;font-weight:600}
-.status-late-badge{background:rgba(239,68,68,.15);color:var(--red);padding:.125rem .5rem;border-radius:10px;font-size:.7rem;font-weight:600}
-.status-done-badge{background:rgba(16,185,129,.15);color:var(--green);padding:.125rem .5rem;border-radius:10px;font-size:.7rem;font-weight:600}
-.status-future-badge{background:var(--bg3);color:var(--text3);padding:.125rem .5rem;border-radius:10px;font-size:.7rem;font-weight:600}
-.week-title{padding:.25rem 1.25rem .75rem;font-weight:600;font-size:.95rem;cursor:pointer}
-.week-progress-bar{height:3px;background:var(--bg3);margin:0 1.25rem .5rem;border-radius:2px;overflow:hidden}
-.week-progress-fill{height:100%;border-radius:2px;transition:width .4s ease}
-.week-body{padding:1rem 1.25rem 1.25rem;border-top:1px solid var(--bg3)}
-.section-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-weight:700;margin:1rem 0 .5rem}
-.section-label:first-child{margin-top:0}
-.content-list{list-style:none;display:flex;flex-direction:column;gap:.375rem}
-.content-list li{font-size:.875rem;color:var(--text2);padding-left:1rem;position:relative;line-height:1.5}
-.content-list li::before{content:'→';position:absolute;left:0;color:var(--text3)}
-.exercise-list{list-style:none;display:flex;flex-direction:column;gap:.5rem}
-.exercise-item{background:var(--bg);border-radius:8px;padding:.625rem .875rem;border:1px solid var(--bg3);transition:border-color .2s}
-.exercise-item:hover{border-color:var(--blue)}
-.exercise-item.ex-done{opacity:.6}
-.ex-label{display:flex;align-items:flex-start;gap:.75rem;cursor:pointer;font-size:.875rem;line-height:1.5}
-.ex-label input[type=checkbox]{margin-top:.15rem;width:16px;height:16px;accent-color:var(--blue);flex-shrink:0;cursor:pointer}
-.ex-done .ex-label span{text-decoration:line-through;color:var(--text3)}
-.cert-badge{background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(245,158,11,.05));border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:.625rem 1rem;font-size:.875rem;color:var(--yellow)}
-.projeto-box{background:linear-gradient(135deg,rgba(59,130,246,.08),rgba(139,92,246,.08));border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:.625rem 1rem;font-size:.875rem;color:var(--text2);line-height:1.5}
-@media(max-width:600px){.health-panel{grid-template-columns:1fr 1fr}.week-header{flex-direction:column;align-items:flex-start}.week-right{width:100%;justify-content:space-between}.header-title{font-size:.875rem}.health-value{font-size:1.5rem}}
-@media(max-width:380px){.health-panel{grid-template-columns:1fr}}
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trilha Daniel</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=cabinet-grotesk@700,800&display=swap" rel="stylesheet">
+  <style>
+    :root,[data-theme="light"]{
+      --bg:#f7f6f2;--surface:#f9f8f5;--surface2:#ededea;--line:#d4d1ca;
+      --text:#28251d;--muted:#7a7974;--faint:#bab9b4;
+      --primary:#01696f;--primary-hi:rgba(1,105,111,.12);
+      --ok:#437a22;--warn:#d19900;--bad:#a13544;
+      --shadow:0 4px 20px rgba(0,0,0,.07);--r:14px;
+      --font-body:'Satoshi',system-ui,sans-serif;
+      --font-display:'Cabinet Grotesk','Satoshi',sans-serif;
+    }
+    [data-theme="dark"]{
+      --bg:#131211;--surface:#1c1b19;--surface2:#242321;--line:#2e2d2b;
+      --text:#cdccca;--muted:#888784;--faint:#4a4946;
+      --primary:#4f98a3;--primary-hi:rgba(79,152,163,.13);
+      --ok:#6daa45;--warn:#e8af34;--bad:#dd6974;
+      --shadow:0 4px 20px rgba(0,0,0,.28);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{min-height:100dvh}
+    body{font-family:var(--font-body);background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
+    button,input,textarea,select{font:inherit;color:inherit}
+    img{display:block;max-width:100%}
+    /* ---------- LAYOUT ---------- */
+    .topbar{position:sticky;top:0;z-index:40;background:color-mix(in oklab,var(--bg) 85%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    .topbar-inner{max-width:1160px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:12px;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:-.02em}
+    .brand svg{color:var(--primary)}
+    .wrap{max-width:1160px;margin:0 auto;padding:20px}
+    /* ---------- CARDS ---------- */
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+    .pad{padding:20px}
+    /* ---------- BUTTONS ---------- */
+    .btn{border:1px solid var(--line);background:var(--surface);color:var(--text);padding:9px 14px;border-radius:10px;cursor:pointer;font-size:.88rem;transition:background .15s,border-color .15s}
+    .btn:hover{background:var(--surface2)}
+    .btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .btn.primary:hover{opacity:.9}
+    /* ---------- GRID ---------- */
+    .grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .grid2c{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    /* ---------- HERO ---------- */
+    .eyebrow{font-size:.74rem;text-transform:uppercase;letter-spacing:.09em;color:var(--primary);font-weight:700}
+    .display{font-family:var(--font-display);font-size:clamp(1.7rem,1.2rem+2.2vw,2.9rem);line-height:1.05;margin:10px 0 12px}
+    .sub{color:var(--muted);max-width:60ch;font-size:.95rem}
+    /* ---------- AUTH ---------- */
+    .field{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+    .field label{font-size:.82rem;color:var(--muted)}
+    .field input{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+    .field input:focus{outline:2px solid var(--primary);outline-offset:2px}
+    /* ---------- STATS ---------- */
+    .stat .n{font-family:var(--font-display);font-size:2.2rem;color:var(--primary);line-height:1}
+    .stat .l{color:var(--muted);font-size:.82rem;margin-top:5px}
+    /* ---------- BAR ---------- */
+    .progress{height:8px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-top:8px}
+    .progress span{display:block;height:100%;background:var(--primary);border-radius:99px;width:0%;transition:width .5s ease}
+    /* ---------- AGENDA ---------- */
+    .day-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
+    .day-card{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px}
+    .day-card h4{font-size:.85rem;margin-bottom:4px}
+    .checks{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .check-item{display:flex;align-items:flex-start;gap:8px;background:var(--surface);border:1px solid var(--line);padding:10px;border-radius:10px;cursor:pointer}
+    .check-item input{margin-top:3px;accent-color:var(--primary)}
+    /* ---------- WEEKS ---------- */
+    .weeks{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+    .week-card{overflow:hidden}
+    .week-head{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;user-select:none}
+    .week-head:hover{background:var(--surface2)}
+    .week-body{display:none;border-top:1px solid var(--line);padding:18px}
+    .week-card.open .week-body{display:block}
+    .badge{font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:99px;background:var(--primary-hi);color:var(--primary)}
+    .phase-chip{font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:99px;margin-left:6px}
+    /* ---------- ITEMS ---------- */
+    .items{display:flex;flex-direction:column;gap:6px}
+    .item{display:flex;align-items:flex-start;gap:8px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);cursor:pointer}
+    .item input{margin-top:3px;accent-color:var(--primary)}
+    .item.done span{opacity:.5;text-decoration:line-through}
+    /* ---------- NOTICE ---------- */
+    .notice{border-left:3px solid var(--warn);background:rgba(209,153,0,.07);padding:12px 14px;border-radius:10px;margin-top:14px;font-size:.88rem}
+    /* ---------- STATUS ---------- */
+    .ok{color:var(--ok)} .bad{color:var(--bad)} .muted{color:var(--muted)}
+    /* ---------- SQL ---------- */
+    .sqlbox{width:100%;min-height:220px;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;font-family:monospace;font-size:.82rem;resize:vertical}
+    /* ---------- FOOTER ---------- */
+    .footer{padding:32px 0 48px;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line);margin-top:32px}
+    /* ---------- MISC ---------- */
+    .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .tiny{font-size:.8rem;color:var(--muted)}
+    .mt{margin-top:16px}
+    .sec-title{font-family:var(--font-display);font-size:1.3rem;font-weight:800;margin-bottom:4px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .phase-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .phase-nav button{padding:7px 12px;border-radius:99px;font-size:.83rem}
+    @media(max-width:860px){
+      .grid2,.grid2c,.grid3,.day-grid{grid-template-columns:1fr}
+      .topbar-inner{flex-wrap:wrap}
+    }
+    @media(max-width:600px){
+      .day-grid{grid-template-columns:1fr 1fr}
+    }
+  </style>
 </head>
 <body>
-<div id="root"><div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#94a3b8;font-family:system-ui;background:#0f172a">Carregando...</div></div>
-<script>
-const { createClient } = supabase;
-const SUPABASE_URL = 'https://jlhhdrxmqwwtqeuxowyj.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_OBQ3GuNPNqBFbHHf7L7uVA_x-z3B-Pj';
-const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const TRILHA_START_DATE = '2026-06-08';
-const fases = [
-  {id:1,nome:'Estratégia Analítica',cor:'#3B82F6',semanas:[1,6]},
-  {id:2,nome:'IA + Agentes + Anthropic',cor:'#8B5CF6',semanas:[7,13]},
-  {id:3,nome:'Arquitetura de Dados',cor:'#10B981',semanas:[14,20]},
-  {id:4,nome:'Machine Learning',cor:'#F59E0B',semanas:[21,30]},
-  {id:5,nome:'Consultoria + Autoridade',cor:'#EF4444',semanas:[31,36]},
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M7 16V11M12 16V8M17 16V13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      Trilha Daniel
+    </div>
+    <div class="actions">
+      <button class="btn" id="themeBtn">🌙 Tema</button>
+      <button class="btn primary" id="syncBtn">☁ Sincronizar</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- HERO + AUTH -->
+  <div class="grid2" style="padding-top:18px">
+    <div class="card pad">
+      <div class="eyebrow">App de progresso pessoal</div>
+      <h1 class="display">36 semanas de trilha,<br>um app que recalcula.</h1>
+      <p class="sub">Marque sessões da rotina e exercícios da trilha. O app detecta semanas atrasadas e calcula sua assiduidade automaticamente. Dados salvos no Supabase.</p>
+      <div class="phase-nav">
+        <button class="btn" onclick="scroll2('agenda')">📅 Agenda</button>
+        <button class="btn" onclick="scroll2('trilha')">📚 Trilha</button>
+        <button class="btn" onclick="scroll2('setup')">🔧 Setup SQL</button>
+      </div>
+    </div>
+    <div class="card pad" id="authPanel">
+      <div class="sec-title" style="margin-bottom:14px">Conexão Supabase</div>
+      <div class="field"><label>Project URL</label><input id="sbUrl" value="https://jlhhdrxmqwwtqeuxowyj.supabase.co"/></div>
+      <div class="field"><label>Anon Key</label><input id="sbKey" value="sb_publishable_OBQ3GuNPNqBFbHHf7L7uVA_x-z3B-Pj"/></div>
+      <div class="field"><label>Email</label><input id="authEmail" placeholder="seu@email.com"/></div>
+      <div class="field"><label>Senha</label><input id="authPassword" type="password" placeholder="mínimo 6 caracteres"/></div>
+      <div class="actions" style="margin-top:4px">
+        <button class="btn primary" id="signInBtn">Entrar</button>
+        <button class="btn" id="signUpBtn">Criar conta</button>
+        <button class="btn" id="signOutBtn">Sair</button>
+      </div>
+      <p class="tiny" id="authStatus" style="margin-top:10px">Aguardando autenticação.</p>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="grid3 mt">
+    <div class="card pad stat"><div class="n" id="statExercises">0</div><div class="l">exercícios concluídos</div></div>
+    <div class="card pad stat"><div class="n" id="statAttendance">0%</div><div class="l">assiduidade semanal</div></div>
+    <div class="card pad stat"><div class="n" id="statDelayed">0</div><div class="l">semanas em atraso</div></div>
+  </div>
+
+  <!-- PAINÉIS SAÚDE -->
+  <div class="grid2c mt">
+    <div class="card pad">
+      <div class="row"><span class="sec-title" style="font-size:1rem">Saúde da rotina</span><strong id="attendanceText">0 / 0</strong></div>
+      <div class="progress"><span id="attendanceBar"></span></div>
+      <div class="notice">Sessões planejadas: 📖 Bíblia (Seg–Sex) · 🏋️ Academia (Seg–Sex) · 📚 Estudo (Seg, Qua, Qui) = 13 blocos/semana</div>
+    </div>
+    <div class="card pad">
+      <div class="row"><span class="sec-title" style="font-size:1rem">Saúde da trilha</span><strong id="exerciseText">0 / 0</strong></div>
+      <div class="progress"><span id="exerciseBar"></span></div>
+      <p class="tiny mt">Uma semana entra como atrasada quando o prazo passa e ainda há exercícios pendentes.</p>
+    </div>
+  </div>
+
+  <!-- AGENDA -->
+  <div id="agenda" class="mt">
+    <div class="row" style="margin-bottom:6px">
+      <div class="sec-title">Rotina desta semana</div>
+      <span class="tiny">Marque o que você cumpriu</span>
+    </div>
+    <div class="day-grid" id="dayGrid"></div>
+  </div>
+
+  <!-- TRILHA -->
+  <div id="trilha" class="mt">
+    <div class="sec-title" style="margin-bottom:14px">Trilha — 36 semanas</div>
+    <div class="weeks" id="weekList"></div>
+  </div>
+
+  <!-- SETUP SQL -->
+  <div id="setup" class="card pad mt">
+    <div class="sec-title" style="margin-bottom:6px">SQL do Supabase</div>
+    <p class="tiny" style="margin-bottom:10px">Rode este SQL no SQL Editor do Supabase para criar as tabelas com Row Level Security.</p>
+    <textarea class="sqlbox" id="sqlBox" readonly></textarea>
+    <div class="actions" style="margin-top:10px">
+      <button class="btn" id="copySqlBtn">📋 Copiar SQL</button>
+    </div>
+  </div>
+
+  <div class="footer">Versão 3 — HTML autocontido, sem dependências externas de módulo. Funciona em GitHub Pages, Vercel e local.</div>
+</div>
+
+<script type="module">
+// ── Supabase via ESM (funciona em GitHub Pages, Vercel, e local) ──
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+// ── Dados das semanas ──
+const WEEKS = [{"n": 1, "phaseKey": "Fase 1", "phaseTitle": "Fundamentos Analíticos", "phaseColor": "#01696f", "title": "Introdução ao Power BI e DAX Básico", "content": ["Microsoft Learn PL-300 — Módulo 1", "Instalar Power BI Desktop", "Criar conta Microsoft Learn"], "exercises": ["Conectar CSV local ao Power BI", "Criar gráfico de barras, cartão e tabela", "Criar medida DAX simples", "Publicar no Power BI Service"]}, {"n": 2, "phaseKey": "Fase 1", "phaseTitle": "Fundamentos Analíticos", "phaseColor": "#01696f", "title": "Modelagem de Dados e Relacionamentos", "content": ["PL-300 — Prepare data for analysis", "Modelagem estrela", "Power Query básico"], "exercises": ["Montar modelo estrela com fato e dimensões", "Criar relacionamentos 1:N", "Remover duplicatas e tratar nulos", "Padronizar nomes de colunas"]}, {"n": 3, "phaseKey": "Fase 1", "phaseTitle": "Fundamentos Analíticos", "phaseColor": "#01696f", "title": "DAX Intermediário", "content": ["Contexto de linha e filtro", "CALCULATE e FILTER", "SQLBI introdução"], "exercises": ["Criar medida com CALCULATE", "Implementar YTD", "Criar ranking com RANKX", "Comparar ano atual vs ano anterior"]}, {"n": 4, "phaseKey": "Fase 1", "phaseTitle": "Fundamentos Analíticos", "phaseColor": "#01696f", "title": "Visualização Avançada e Design", "content": ["Design de dashboards", "Drill-through", "Tooltips customizados"], "exercises": ["Recriar dashboard ruim", "Adicionar drill-through", "Criar tooltip customizado", "Aplicar conditional formatting"]}, {"n": 5, "phaseKey": "Fase 1", "phaseTitle": "Fundamentos Analíticos", "phaseColor": "#01696f", "title": "SQL para Analistas", "content": ["SELECT, WHERE, GROUP BY", "JOINs", "Subqueries"], "exercises": ["Resolver 10 queries SQL básicas", "Fazer JOIN de 3 tabelas", "Criar subquery top clientes", "Usar HAVING e ORDER BY"]}, {"n": 6, "phaseKey": "Fase 1", "phaseTitle": "Fundamentos Analíticos", "phaseColor": "#01696f", "title": "SQL Avançado + Revisão + Simulado PL-300", "content": ["Window functions", "CTEs", "Simulado PL-300"], "exercises": ["Usar ROW_NUMBER e LAG", "Reescrever query com CTE", "Resolver 5 desafios SQL médios", "Fazer simulado PL-300"]}, {"n": 7, "phaseKey": "Fase 2", "phaseTitle": "IA Estruturada e Agentes", "phaseColor": "#7a39bb", "title": "Fundamentos de IA e LLMs", "content": ["Elements of AI caps 1 e 2", "Google Gen AI Fundamentals", "Anthropic AI Fluency"], "exercises": ["Completar quizzes do Elements of AI", "Testar 10 prompts no Claude", "Explicar LLM/RAG/Fine-tuning no Notion", "Criar pasta /agente no projeto"]}, {"n": 8, "phaseKey": "Fase 2", "phaseTitle": "IA Estruturada e Agentes", "phaseColor": "#7a39bb", "title": "Prompt Engineering", "content": ["Claude 101", "Prompt engineering guide", "Spec-driven development"], "exercises": ["Criar 3 system prompts", "Testar chain-of-thought", "Criar prompt de artigo técnico", "Montar biblioteca de prompts"]}, {"n": 9, "phaseKey": "Fase 2", "phaseTitle": "IA Estruturada e Agentes", "phaseColor": "#7a39bb", "title": "API do Claude", "content": ["Anthropic API messages", "SDK Python", "Parâmetros de geração"], "exercises": ["Obter API key", "Fazer 1ª chamada à API", "Criar função que gera artigo", "Ajustar temperatura e max_tokens"]}, {"n": 10, "phaseKey": "Fase 2", "phaseTitle": "IA Estruturada e Agentes", "phaseColor": "#7a39bb", "title": "Fluxos e Agentes", "content": ["Tool use", "Workflows multi-step", "Tratamento de erros"], "exercises": ["Criar fluxo pesquisar → rascunhar → revisar", "Implementar tool use simples", "Adicionar fallback de erro", "Testar com 5 temas"]}, {"n": 11, "phaseKey": "Fase 2", "phaseTitle": "IA Estruturada e Agentes", "phaseColor": "#7a39bb", "title": "Pandas Essencial", "content": ["Kaggle Learn Pandas", "DataFrames", "groupby/merge"], "exercises": ["Completar Kaggle Pandas", "Responder 5 perguntas de negócio", "Usar groupby e pivot_table", "Exportar CSV para Power BI"]}, {"n": 12, "phaseKey": "Fase 2", "phaseTitle": "IA Estruturada e Agentes", "phaseColor": "#7a39bb", "title": "Visualização com Python", "content": ["Kaggle Learn Data Visualization", "Seaborn", "Matplotlib"], "exercises": ["Completar Kaggle Data Viz", "Criar 5 gráficos Seaborn", "Comparar gráfico Python vs Power BI", "Salvar PNGs no projeto"]}, {"n": 13, "phaseKey": "Fase 2", "phaseTitle": "IA Estruturada e Agentes", "phaseColor": "#7a39bb", "title": "Revisão Fase 2 + Certificados", "content": ["Revisão prompts/API/Pandas", "Badge Google Gen AI", "Certificado Elements of AI"], "exercises": ["Completar quiz final Google Gen AI", "Concluir Elements of AI", "Publicar 1 artigo com o agente", "Resolver 3 desafios Python easy"]}, {"n": 14, "phaseKey": "Fase 3", "phaseTitle": "Arquitetura de Dados", "phaseColor": "#006494", "title": "dbt Fundamentos", "content": ["dbt Fundamentals módulos iniciais", "Conceito de source/ref", "DuckDB local"], "exercises": ["Instalar dbt Core", "Criar primeiro modelo staging", "Rodar dbt run", "Rodar dbt test"]}, {"n": 15, "phaseKey": "Fase 3", "phaseTitle": "Arquitetura de Dados", "phaseColor": "#006494", "title": "dbt Testes e Docs", "content": ["Testes dbt", "YAML docs", "Macros"], "exercises": ["Criar testes not_null/unique", "Escrever documentação YAML", "Criar macro reutilizável", "Gerar dbt docs"]}, {"n": 16, "phaseKey": "Fase 3", "phaseTitle": "Arquitetura de Dados", "phaseColor": "#006494", "title": "BigQuery + Advanced SQL", "content": ["BigQuery Sandbox", "Kaggle Advanced SQL", "Particionamento"], "exercises": ["Criar projeto BigQuery Sandbox", "Completar Kaggle Advanced SQL", "Usar window functions no BigQuery", "Comparar query com e sem partição"]}, {"n": 17, "phaseKey": "Fase 3", "phaseTitle": "Arquitetura de Dados", "phaseColor": "#006494", "title": "Arquitetura Medallion", "content": ["Bronze, Silver, Gold", "Linhagem de dados", "Modern Data Stack"], "exercises": ["Desenhar arquitetura no Excalidraw", "Implementar Bronze/Silver no dbt", "Criar diagrama de lineage", "Escrever artigo sobre arquitetura"]}, {"n": 18, "phaseKey": "Fase 3", "phaseTitle": "Arquitetura de Dados", "phaseColor": "#006494", "title": "Orquestração com Prefect", "content": ["Prefect Cloud", "DAGs e schedulers", "Alertas"], "exercises": ["Criar conta Prefect", "Orquestrar dbt run", "Configurar alerta de falha", "Documentar pipeline"]}, {"n": 19, "phaseKey": "Fase 3", "phaseTitle": "Arquitetura de Dados", "phaseColor": "#006494", "title": "APIs e Coleta de Dados", "content": ["requests + JSON", "APIs públicas", "Tratamento de erros"], "exercises": ["Consumir uma API pública", "Salvar resposta em DataFrame", "Criar pipeline API → tabela", "Criar dashboard com os dados coletados"]}, {"n": 20, "phaseKey": "Fase 3", "phaseTitle": "Arquitetura de Dados", "phaseColor": "#006494", "title": "Revisão Fase 3 + Certificação dbt", "content": ["Revisão geral da stack", "Certificação dbt", "Portfólio técnico"], "exercises": ["Fazer exame dbt Fundamentals", "Resolver 5 desafios SQL hard", "Gravar vídeo explicando arquitetura", "Publicar artigo técnico"]}, {"n": 21, "phaseKey": "Fase 4", "phaseTitle": "Machine Learning e Modelagem", "phaseColor": "#964219", "title": "Estatística para ML", "content": ["StatQuest statistics", "freeCodeCamp Data Analysis", "Distribuições"], "exercises": ["Fazer Mean-Variance-Std Calculator", "Calcular correlação no dataset", "Criar histograma e boxplot", "Interpretar distribuição"]}, {"n": 22, "phaseKey": "Fase 4", "phaseTitle": "Machine Learning e Modelagem", "phaseColor": "#964219", "title": "Regressão Linear e Logística", "content": ["Kaggle Intro to ML", "Métricas R2/RMSE/MAE", "Logistic regression"], "exercises": ["Completar Kaggle Intro to ML", "Treinar regressão linear", "Avaliar modelo com métricas", "Criar variável binária e testar logística"]}, {"n": 23, "phaseKey": "Fase 4", "phaseTitle": "Machine Learning e Modelagem", "phaseColor": "#964219", "title": "Feature Engineering", "content": ["Kaggle Feature Engineering", "Encoding", "Pipelines"], "exercises": ["Completar Kaggle Feature Engineering", "Criar 5 novas features", "Comparar modelo antes/depois", "Aplicar one-hot encoding"]}, {"n": 24, "phaseKey": "Fase 4", "phaseTitle": "Machine Learning e Modelagem", "phaseColor": "#964219", "title": "Árvores e Ensembles", "content": ["Decision Trees", "Random Forest", "XGBoost"], "exercises": ["Completar Kaggle Intermediate ML", "Treinar Random Forest", "Treinar XGBoost", "Analisar feature importance"]}, {"n": 25, "phaseKey": "Fase 4", "phaseTitle": "Machine Learning e Modelagem", "phaseColor": "#964219", "title": "Validação e Overfitting", "content": ["Cross-validation", "Bias-variance", "Regularização"], "exercises": ["Aplicar K-Fold CV", "Plotar learning curves", "Testar regularização", "Completar Medical Data Visualizer"]}, {"n": 26, "phaseKey": "Fase 4", "phaseTitle": "Machine Learning e Modelagem", "phaseColor": "#964219", "title": "Séries Temporais", "content": ["ARIMA", "Prophet", "Forecasting"], "exercises": ["Decompor série temporal", "Implementar ARIMA", "Comparar ARIMA vs Prophet", "Criar dashboard com previsão"]}, {"n": 27, "phaseKey": "Fase 4", "phaseTitle": "Machine Learning e Modelagem", "phaseColor": "#964219", "title": "Clusterização e Segmentação", "content": ["RFM", "K-Means", "PCA"], "exercises": ["Criar análise RFM", "Aplicar K-Means", "Usar elbow method", "Visualizar clusters com PCA"]}, {"n": 28, "phaseKey": "Fase 4", "phaseTitle": "Machine Learning e Modelagem", "phaseColor": "#964219", "title": "Deploy com Streamlit", "content": ["Streamlit básico", "Deploy no Streamlit Cloud", "UX para não-técnicos"], "exercises": ["Criar app Streamlit", "Adicionar gráficos Plotly", "Fazer deploy no Streamlit Cloud", "Coletar feedback de 1 pessoa"]}, {"n": 29, "phaseKey": "Fase 4", "phaseTitle": "Machine Learning e Modelagem", "phaseColor": "#964219", "title": "Precificação de Serviços", "content": ["Escopo de serviços", "Proposta comercial", "ROI"], "exercises": ["Definir 3 serviços com preço", "Escrever proposta comercial", "Criar calculadora de ROI", "Testar pitch de 2 minutos"]}, {"n": 30, "phaseKey": "Fase 4", "phaseTitle": "Machine Learning e Modelagem", "phaseColor": "#964219", "title": "Revisão Fase 4", "content": ["HarvardX Data Science Visualization", "Revisão ML", "Refatoração"], "exercises": ["Completar exercícios HarvardX", "Resolver 10 desafios Kaggle", "Refatorar código antigo", "Publicar post sobre 7 meses de estudo"]}, {"n": 31, "phaseKey": "Fase 5", "phaseTitle": "Autoridade e Consultoria", "phaseColor": "#437a22", "title": "Newsletter + Agente de Conteúdo v2", "content": ["Beehiiv/Substack", "Estrutura de newsletter", "Agente de conteúdo"], "exercises": ["Criar página da newsletter", "Adaptar agente para formato newsletter", "Publicar edição #1", "Buscar primeiros 10 assinantes"]}, {"n": 32, "phaseKey": "Fase 5", "phaseTitle": "Autoridade e Consultoria", "phaseColor": "#437a22", "title": "LinkedIn como Canal de Autoridade", "content": ["Perfil LinkedIn", "Estratégia de conteúdo", "Networking"], "exercises": ["Otimizar headline e about", "Publicar 3 posts técnicos", "Comentar em 5 posts da área", "Mandar 3 conexões personalizadas"]}, {"n": 33, "phaseKey": "Fase 5", "phaseTitle": "Autoridade e Consultoria", "phaseColor": "#437a22", "title": "Primeiro Projeto para Cliente", "content": ["Discovery call", "Briefing", "Proposta"], "exercises": ["Fazer 1 discovery call", "Preencher briefing", "Montar proposta com escopo", "Entregar versão v0 do dashboard"]}, {"n": 34, "phaseKey": "Fase 5", "phaseTitle": "Autoridade e Consultoria", "phaseColor": "#437a22", "title": "Agente de Monitoramento para Clientes", "content": ["Alertas automáticos", "Python email/sendgrid", "KPIs"], "exercises": ["Criar agente de KPI", "Consultar BigQuery via Python", "Enviar alerta automático", "Documentar como produto"]}, {"n": 35, "phaseKey": "Fase 5", "phaseTitle": "Autoridade e Consultoria", "phaseColor": "#437a22", "title": "Retainer e Escala", "content": ["Modelo mensal", "Planos de serviço", "Pitch"], "exercises": ["Definir pacote retainer", "Criar apresentação de 10 slides", "Calcular meta de clientes", "Apresentar pitch a 1 cliente"]}, {"n": 36, "phaseKey": "Fase 5", "phaseTitle": "Autoridade e Consultoria", "phaseColor": "#437a22", "title": "Revisão Final + Próximos 6 Meses", "content": ["Auditoria de portfólio", "Planejamento futuro", "Case final"], "exercises": ["Atualizar currículo e LinkedIn", "Publicar artigo de encerramento", "Listar certificados e projetos", "Definir metas dos próximos 6 meses"]}];
+
+const PLANNED = [
+  { key:'biblia',  label:'📖 Bíblia',   days:[1,2,3,4,5] },
+  { key:'academia',label:'🏋️ Academia', days:[1,2,3,4,5] },
+  { key:'estudo',  label:'📚 Estudo',    days:[1,3,4] },
 ];
-const semanas = [
-  {id:1,fase:1,titulo:'Power BI Estratégico — Fundamentos',conteudo:['Microsoft Learn — Data Analyst PL-300: módulos 1 e 2','YouTube Meigarom: "KPIs que importam de verdade"','Leitura: Storytelling with Data (blog da autora — cap. 1 e 2)'],exercicios:['Crie um relatório Power BI com os dados de vendas do seu trabalho atual','Liste 5 KPIs do seu setor e escreva 1 pergunta de negócio para cada','Refaça um dashboard antigo aplicando os princípios de storytelling'],certificacao:null,projeto:'Publique no GitHub o primeiro artigo do DataHub: "Por que KPI ruim mata decisão boa"'},
-  {id:2,fase:1,titulo:'SQL Avançado para Análise',conteudo:['YouTube Programação Dinâmica: SQL Window Functions (playlist completa)','Mode Analytics: SQL School — Advanced (gratuito)','StrataScratch: 10 exercícios nível médio'],exercicios:['Resolva 10 desafios SQL no StrataScratch (nível médio)','Escreva uma query com ROW_NUMBER, RANK e DENSE_RANK sobre dados reais','Crie uma análise de cohort simples em SQL puro','Documente as queries no GitHub com comentários explicando o raciocínio'],certificacao:null,projeto:'Adicione seção SQL ao DataHub com uma análise real comentada'},
-  {id:3,fase:1,titulo:'Estatística Aplicada a Negócios',conteudo:
+
+const START = '2026-06-01';
+
+// ── State ──
+let sb = null, user = null;
+let routine  = loadLocal('routine',   {});
+let exercises = loadLocal('exercises', {});
+
+// ── Helpers ──
+function loadLocal(k, fb){ try{ return JSON.parse(localStorage.getItem('td_'+k)) ?? fb }catch{ return fb } }
+function saveLocal(k, v){ localStorage.setItem('td_'+k, JSON.stringify(v)); }
+function fmt(d){ return d.toISOString().slice(0,10); }
+function parseDate(s){ const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+function addDays(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
+function monStart(d){ const r=new Date(d); r.setDate(r.getDate()-((r.getDay()+6)%7)); r.setHours(0,0,0,0); return r; }
+function isoDay(d){ return ((d.getDay()+6)%7)+1; } // Mon=1
+function weekBounds(n){ const s=addDays(parseDate(START),(n-1)*7); return {s,e:addDays(s,6)}; }
+function currWeek(){ const now=monStart(new Date()),base=monStart(parseDate(START)); return Math.max(1,Math.floor((now-base)/604800000)+1); }
+function scroll2(id){ document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); }
+
+// ── Build agenda ──
+function buildAgenda(){
+  const grid = document.getElementById('dayGrid'); grid.innerHTML='';
+  const mon = monStart(new Date());
+  ['Seg','Ter','Qua','Qui','Sex'].forEach((nome,i)=>{
+    const d=addDays(mon,i), ds=fmt(d), day=isoDay(d);
+    const card=document.createElement('div'); card.className='day-card';
+    card.innerHTML=`<h4>${nome}</h4><div class="tiny">${ds}</div><div class="checks"></div>`;
+    const checks=card.querySelector('.checks');
+    PLANNED.forEach(p=>{
+      if(!p.days.includes(day)) return;
+      const key=`${ds}__${p.key}`, chk=!!routine[key];
+      const lbl=document.createElement('label'); lbl.className='check-item';
+      lbl.innerHTML=`<input type="checkbox" ${chk?'checked':''}><span>${p.label}</span>`;
+      lbl.querySelector('input').addEventListener('change',e=>{
+        routine[key]=e.target.checked; saveLocal('routine',routine); recalc();
+      });
+      checks.appendChild(lbl);
+    });
+    grid.appendChild(card);
+  });
+}
+
+// ── Build week list ──
+function buildWeeks(){
+  const list=document.getElementById('weekList'); list.innerHTML='';
+  WEEKS.forEach(w=>{
+    const {s,e}=weekBounds(w.n);
+    const div=document.createElement('div'); div.className='card week-card';
+    div.innerHTML=`
+      <div class="week-head">
+        <div>
+          <span class="badge">Semana ${w.n}</span>
+          <span class="phase-chip" style="background:${w.phaseColor}1a;color:${w.phaseColor};border:1px solid ${w.phaseColor}44">${w.phaseKey}</span>
+          <strong style="margin-left:6px;font-size:.93rem">${w.title}</strong>
+          <div class="tiny" style="margin-top:2px">${fmt(s)} → ${fmt(e)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="tiny muted" id="wst-${w.n}">—</span>
+          <button class="btn" style="padding:6px 11px;font-size:.8rem">Abrir</button>
+        </div>
+      </div>
+      <div class="week-body">
+        <div class="grid2c">
+          <div>
+            <div style="font-weight:600;margin-bottom:8px">📖 Conteúdo</div>
+            <div class="items" id="wcnt-${w.n}"></div>
+          </div>
+          <div>
+            <div style="font-weight:600;margin-bottom:8px">✅ Exercícios</div>
+            <div class="items" id="wex-${w.n}"></div>
+            <div class="card" style="padding:12px;margin-top:12px;background:var(--surface2)">
+              <div class="row"><span class="tiny">Progresso</span><strong id="wdone-${w.n}" class="tiny">0/0</strong></div>
+              <div class="progress"><span id="wbar-${w.n}"></span></div>
+              <p class="tiny" id="wnote-${w.n}" style="margin-top:8px">—</p>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    div.querySelector('.week-head').addEventListener('click',()=>div.classList.toggle('open'));
+    // content
+    const cntEl=div.querySelector(`#wcnt-${w.n}`);
+    w.content.forEach(c=>{
+      const d=document.createElement('div'); d.className='item';
+      d.innerHTML=`<span>${c}</span>`; cntEl.appendChild(d);
+    });
+    // exercises
+    const exEl=div.querySelector(`#wex-${w.n}`);
+    w.exercises.forEach((ex,idx)=>{
+      const key=`w${w.n}__e${idx+1}`, done=!!exercises[key];
+      const lbl=document.createElement('label'); lbl.className='item'+(done?' done':'');
+      lbl.innerHTML=`<input type="checkbox" ${done?'checked':''}><span>${ex}</span>`;
+      lbl.querySelector('input').addEventListener('change',e=>{
+        exercises[key]=e.target.checked; saveLocal('exercises',exercises); recalc();
+      });
+      exEl.appendChild(lbl);
+    });
+    list.appendChild(div);
+  });
+}
+
+// ── Recalc ──
+function recalc(){
+  // routine
+  const mon=monStart(new Date()); let planned=0,done=0;
+  for(let i=0;i<5;i++){
+    const d=addDays(mon,i),day=isoDay(d),ds=fmt(d);
+    PLANNED.forEach(p=>{
+      if(!p.days.includes(day)) return;
+      planned++;
+      if(routine[`${ds}__${p.key}`]) done++;
+    });
+  }
+  const att=planned?Math.round(done/planned*100):0;
+  document.getElementById('statAttendance').textContent=att+'%';
+  document.getElementById('attendanceText').textContent=`${done} / ${planned}`;
+  document.getElementById('attendanceBar').style.width=att+'%';
+  // exercises
+  let totEx=0,doneEx=0,delayed=0;
+  const cw=currWeek();
+  WEEKS.forEach(w=>{
+    const tot=w.exercises.length; totEx+=tot;
+    let d=0;
+    w.exercises.forEach((_,i)=>{ if(exercises[`w${w.n}__e${i+1}`]) d++; });
+    doneEx+=d;
+    const rem=tot-d, pct=Math.round(d/tot*100);
+    document.getElementById(`wdone-${w.n}`).textContent=`${d}/${tot}`;
+    document.getElementById(`wbar-${w.n}`).style.width=pct+'%';
+    let note,cls;
+    if(w.n<cw && rem>0){ note=`Atrasada — faltam ${rem} exercício(s)`; cls='bad'; delayed++; }
+    else if(w.n===cw && rem>0){ note=`Semana atual — faltam ${rem}`; cls='muted'; }
+    else if(rem===0){ note='Concluída ✓'; cls='ok'; }
+    else{ note='Planejada'; cls='muted'; }
+    document.getElementById(`wst-${w.n}`).textContent=note.split('—')[0].trim();
+    document.getElementById(`wst-${w.n}`).className='tiny '+cls;
+    document.getElementById(`wnote-${w.n}`).textContent=note;
+    document.getElementById(`wnote-${w.n}`).className='tiny '+cls;
+    // update done class on exercise items
+    const exEl=document.getElementById(`wex-${w.n}`);
+    if(exEl) Array.from(exEl.querySelectorAll('.item')).forEach((el,i)=>{
+      el.classList.toggle('done', !!exercises[`w${w.n}__e${i+1}`]);
+    });
+  });
+  document.getElementById('statExercises').textContent=doneEx;
+  document.getElementById('exerciseText').textContent=`${doneEx} / ${totEx}`;
+  document.getElementById('exerciseBar').style.width=(totEx?Math.round(doneEx/totEx*100):0)+'%';
+  document.getElementById('statDelayed').textContent=delayed;
+}
+
+// ── Supabase auth ──
+async function initSb(){
+  const url=document.getElementById('sbUrl').value.trim();
+  const key=document.getElementById('sbKey').value.trim();
+  if(!url||!key) return;
+  sb=createClient(url,key);
+  const {data}=await sb.auth.getSession();
+  user=data?.session?.user||null;
+  if(user) await pull();
+  refreshAuthUI();
+}
+
+function setStatus(msg){ document.getElementById('authStatus').textContent=msg; }
+function refreshAuthUI(){ setStatus(user?`Logado: ${user.email}`:'Desconectado.'); }
+
+async function signIn(){
+  await initSb();
+  const {data,error}=await sb.auth.signInWithPassword({
+    email:document.getElementById('authEmail').value.trim(),
+    password:document.getElementById('authPassword').value,
+  });
+  if(error) return setStatus('Erro: '+error.message);
+  user=data.user; refreshAuthUI(); await pull();
+}
+
+async function signUp(){
+  await initSb();
+  const {data,error}=await sb.auth.signUp({
+    email:document.getElementById('authEmail').value.trim(),
+    password:document.getElementById('authPassword').value,
+  });
+  if(error) return setStatus('Erro: '+error.message);
+  setStatus('Conta criada! Verifique seu email se confirmação estiver ativa.');
+  if(data?.user) { user=data.user; refreshAuthUI(); }
+}
+
+async function signOut(){
+  if(sb) await sb.auth.signOut();
+  user=null; refreshAuthUI();
+}
+
+async function push(){
+  if(!user||!sb) return alert('Faça login primeiro.');
+  const rRows=Object.entries(routine).map(([entry_key,completed])=>({'user_id':user.id,entry_key,completed}));
+  const eRows=Object.entries(exercises).map(([entry_key,completed])=>({'user_id':user.id,entry_key,completed}));
+  if(rRows.length) await sb.from('routine_entries').upsert(rRows,{onConflict:'user_id,entry_key'});
+  if(eRows.length) await sb.from('exercise_entries').upsert(eRows,{onConflict:'user_id,entry_key'});
+  setStatus('Sincronizado com sucesso ✓');
+}
+
+async function pull(){
+  if(!user||!sb) return;
+  const r1=await sb.from('routine_entries').select('entry_key,completed').eq('user_id',user.id);
+  const r2=await sb.from('exercise_entries').select('entry_key,completed').eq('user_id',user.id);
+  if(!r1.error) routine=Object.fromEntries(r1.data.map(x=>[x.entry_key,x.completed]));
+  if(!r2.error) exercises=Object.fromEntries(r2.data.map(x=>[x.entry_key,x.completed]));
+  saveLocal('routine',routine); saveLocal('exercises',exercises);
+  rebuildChecks(); recalc();
+  setStatus('Dados carregados da nuvem ✓');
+}
+
+function rebuildChecks(){
+  // re-sync checkbox states after pull
+  document.querySelectorAll('[data-routine-key]').forEach(inp=>{
+    inp.checked=!!routine[inp.dataset.routineKey];
+  });
+  document.querySelectorAll('[data-ex-key]').forEach(inp=>{
+    inp.checked=!!exercises[inp.dataset.exKey];
+  });
+}
+
+// ── SQL ──
+const SQL=`create extension if not exists pgcrypto;
+
+create table if not exists public.routine_entries (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  entry_key text not null,
+  completed boolean not null default false,
+  created_at timestamptz not null default now(),
+  unique(user_id, entry_key)
+);
+
+create table if not exists public.exercise_entries (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  entry_key text not null,
+  completed boolean not null default false,
+  created_at timestamptz not null default now(),
+  unique(user_id, entry_key)
+);
+
+alter table public.routine_entries enable row level security;
+alter table public.exercise_entries enable row level security;
+
+create policy "routine_own_select" on public.routine_entries for select using (auth.uid()=user_id);
+create policy "routine_own_insert" on public.routine_entries for insert with check (auth.uid()=user_id);
+create policy "routine_own_update" on public.routine_entries for update using (auth.uid()=user_id);
+create policy "routine_own_delete" on public.routine_entries for delete using (auth.uid()=user_id);
+
+create policy "exercise_own_select" on public.exercise_entries for select using (auth.uid()=user_id);
+create policy "exercise_own_insert" on public.exercise_entries for insert with check (auth.uid()=user_id);
+create policy "exercise_own_update" on public.exercise_entries for update using (auth.uid()=user_id);
+create policy "exercise_own_delete" on public.exercise_entries for delete using (auth.uid()=user_id);
+
+grant select,insert,update,delete on public.routine_entries to authenticated;
+grant select,insert,update,delete on public.exercise_entries to authenticated;`;
+
+// ── Init ──
+document.getElementById('sqlBox').value=SQL;
+document.getElementById('copySqlBtn').addEventListener('click',async()=>{
+  await navigator.clipboard.writeText(SQL).catch(()=>{});
+  alert('SQL copiado!');
+});
+document.getElementById('themeBtn').addEventListener('click',()=>{
+  const r=document.documentElement;
+  r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');
+});
+document.getElementById('signInBtn').addEventListener('click',signIn);
+document.getElementById('signUpBtn').addEventListener('click',signUp);
+document.getElementById('signOutBtn').addEventListener('click',signOut);
+document.getElementById('syncBtn').addEventListener('click',async()=>{
+  try{ await initSb(); await push(); }
+  catch(e){ setStatus('Erro: '+e.message); }
+});
+
+buildAgenda();
+buildWeeks();
+recalc();
+initSb();
+</script>
+</body>
+</html>
